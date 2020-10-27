@@ -54,13 +54,13 @@ pub fn info_get_name() -> String {
 
 pub fn my_pe() -> i32 {
     unsafe {
-        return shmemlib::shmem_my_pe();
+        shmemlib::shmem_my_pe()
     }
 }
 
 pub fn n_pes() -> i32 {
     unsafe {
-        return shmemlib::shmem_n_pes();
+       shmemlib::shmem_n_pes()
     }
 }
 
@@ -112,17 +112,18 @@ pub fn int_get(dest: *mut i32, src: *const i32, n: u64, pe: i32) {
 
 // etc.
 
-pub trait RDMAApi<T> {
-    fn p(&self, dest: *mut T, src: T, pe: i32);
-}
+// pub trait RDMAApi<T> {
+//     fn p(&self, dest: *mut T, src: T, pe: i32);
+// }
 
-impl dyn RDMAApi<i32> {
-    fn p(&self, dest: *mut i32, src: i32, pe: i32) {
-        unsafe {
-            shmemlib::shmem_int_p(dest, src, pe);
-        }
-    }
-}
+// impl dyn RDMAApi<i32> {
+//     fn p(&self, dest: *mut i32, src: i32, pe: i32) {
+//         unsafe {
+//             shmemlib::shmem_int_p(dest, src, pe);
+//         }
+//     }
+// }
+
 
 //
 // == memory management ==================================================

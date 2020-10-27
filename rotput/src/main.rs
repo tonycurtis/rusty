@@ -16,6 +16,9 @@ fn main() {
 
     shmem::int_p(dest, nextpe, nextpe);
 
+    // let xx = shmem::RdmaOp { dest: dest, src: nextpe, pe: nextpe };
+    // shmem::p(xx);
+
     shmem::barrier_all();
 
     // raw pointer deref
