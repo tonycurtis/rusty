@@ -1,24 +1,25 @@
 #!/bin/sh -x
 
-INC_FLAGS="`pkg-config --cflags osss-ucx`"
+inc_flags="`pkg-config --cflags osss-ucx`"
 
-TMPSRC="pull.c"
+tmpsrc="pull.c"
 
-echo '#include <shmem.h>' > $TMPSRC
+echo '#include <shmem.h>' > $tmpsrc
 
-args=(
-    --no-doc-comments
-    --enable-function-attribute-detection
-    --whitelist-var '^SHMEM_.*'
-    --whitelist-var '^_SHMEM_.*'
-    --whitelist-function '^sh.*'
-    $TMPSRC
-    --raw-line '#![allow(non_camel_case_types,improper_ctypes)]'
-    -o shmemlib/src/lib.rs
-    --
-    $INC_FLAGS
-)
+caveat=<<EOT
+#![allow(non_camel_case_types,improper_ctypes)] // not our fault'
+EOT
 
-bindgen ${args[@]}
+bindgen \
+    --no-doc-comments \
+    --enable-function-attribute-detection \
+    --whitelist-var '^SHMEM_.*' \
+    --whitelist-var '^_SHMEM_.*' \
+    --whitelist-function '^sh.*' \
+    $tmpsrc \
+    --raw-line "$caveat" \
+    -o shmemlib/src/lib.rs \
+    -- \
+    $inc_flags
 
-rm -f $TMPSRC
+rm -f $tmpsrc
