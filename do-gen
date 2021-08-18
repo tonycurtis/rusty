@@ -6,9 +6,6 @@ tmpsrc="pull.c"
 
 echo '#include <shmem.h>' > $tmpsrc
 
-caveat=<<EOT
-EOT
-
 bindgen                                           \
     --no-doc-comments                             \
     --enable-function-attribute-detection         \
