@@ -10,16 +10,16 @@ caveat=<<EOT
 #![allow(non_camel_case_types,improper_ctypes)] // not our fault'
 EOT
 
-bindgen \
-    --no-doc-comments \
-    --enable-function-attribute-detection \
-    --whitelist-var '^SHMEM_.*' \
-    --whitelist-var '^_SHMEM_.*' \
-    --whitelist-function '^sh.*' \
-    $tmpsrc \
-    --raw-line "$caveat" \
-    -o shmemlib/src/lib.rs \
-    -- \
+bindgen                                           \
+    --no-doc-comments                             \
+    --enable-function-attribute-detection         \
+    --whitelist-var '^SHMEM_.*'                   \
+    --whitelist-var '^_SHMEM_.*'                  \
+    --whitelist-function '^sh.*'                  \
+    $tmpsrc                                       \
+    --raw-line "$caveat"                          \
+    -o shmemlib/src/lib.rs                        \
+    --                                            \
     $inc_flags
 
 rm -f $tmpsrc
