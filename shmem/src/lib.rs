@@ -1,5 +1,6 @@
 use shmemlib;
 use std::string::String;
+// use std::mem;
 
 // pass through, will have to look at parsing "pub const" decls.
 
@@ -139,9 +140,9 @@ pub fn malloc(n: usize) -> SymmMemAddr {
     }
 }
 
-pub fn calloc(n: u64, s: usize) -> SymmMemAddr {
+pub fn calloc(n: usize, s: usize) -> SymmMemAddr {
     unsafe {
-        shmemlib::shmem_calloc(n, s as u64)
+        shmemlib::shmem_calloc(n as u64, s as u64)
     }
 }
 

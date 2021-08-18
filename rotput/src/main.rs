@@ -12,7 +12,8 @@ fn main() {
 
     let nextpe = (me + 1) % n;
 
-    let dest = shmem::malloc(mem::size_of::<i32>()) as *mut i32;
+    // how to wrap this?
+    let dest = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
 
     shmem::int_p(dest, nextpe, nextpe);
 
@@ -23,7 +24,7 @@ fn main() {
 
     // raw pointer deref
     unsafe {
-        print!("{}: got {}", me, *dest);
+        print!("{:>6}: got {:>6}", me, *dest);
         if *dest == me {
             println!("  CORRECT");
         }
@@ -33,5 +34,7 @@ fn main() {
     }
 
     shmem::free(dest as shmem::SymmMemAddr);
+
     shmem::finalize();
+
 }

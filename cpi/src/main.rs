@@ -1,7 +1,7 @@
 use std::mem;
 use uname::uname;
 use std::f64::consts::PI;
-use std::cmp;
+// use std::cmp;
 use shmem;
 
 pub const N: i64 = 10000;

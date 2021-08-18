@@ -9,12 +9,9 @@ fn main() {
     let me = shmem::my_pe();
     let n = shmem::n_pes();
 
-    println!("{}: PE {} of {}: version \"{}\" {}.{}",
+    println!("{}: PE {} of {}",
 	     node,
-	     me, n,
-	     shmem::info_get_name(),
-             shmem::MAJOR_VERSION,
-             shmem::MINOR_VERSION);
+	     me, n);
 
     shmem::finalize();
 }

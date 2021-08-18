@@ -6,15 +6,19 @@ TMPSRC="pull.c"
 
 echo '#include <shmem.h>' > $TMPSRC
 
-bindgen \
-    --no-doc-comments \
-    --enable-function-attribute-detection \
-    --whitelist-var '^SHMEM_.*' \
-    --whitelist-var '^_SHMEM_.*' \
-    --whitelist-function '^sh.*' \
-    $TMPSRC \
-    -o shmemlib/src/lib.rs \
-    -- \
+args=(
+    --no-doc-comments
+    --enable-function-attribute-detection
+    --whitelist-var '^SHMEM_.*'
+    --whitelist-var '^_SHMEM_.*'
+    --whitelist-function '^sh.*'
+    $TMPSRC
+    --raw-line '#![allow(non_camel_case_types,improper_ctypes)]'
+    -o shmemlib/src/lib.rs
+    --
     $INC_FLAGS
+)
+
+bindgen ${args[@]}
 
 rm -f $TMPSRC
