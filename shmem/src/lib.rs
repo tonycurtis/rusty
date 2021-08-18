@@ -10,6 +10,28 @@ pub const VENDOR_STRING: &'static [u8; 9usize] = shmemlib::SHMEM_VENDOR_STRING;
 
 pub type SymmMemAddr = *mut libc::c_void;
 
+// TEAMS: don't like this, can't extend to derived teams.  just a
+// stop-gap
+//
+
+pub type TeamType = shmemlib::shmem_team_t;
+
+pub fn team_world() -> TeamType {
+    unsafe {
+	shmemlib::SHMEM_TEAM_WORLD
+    }
+}
+pub fn team_shared() -> TeamType {
+    unsafe {
+	shmemlib::SHMEM_TEAM_SHARED
+    }
+}
+pub fn team_invalid() -> TeamType {
+    unsafe {
+	shmemlib::SHMEM_TEAM_INVALID
+    }
+}
+
 //
 // == initialize and finalize ============================================
 //
@@ -62,6 +84,18 @@ pub fn my_pe() -> i32 {
 pub fn n_pes() -> i32 {
     unsafe {
        shmemlib::shmem_n_pes()
+    }
+}
+
+pub fn team_my_pe(t: shmemlib::shmem_team_t) -> i32 {
+    unsafe {
+        shmemlib::shmem_team_my_pe(t)
+    }
+}
+
+pub fn team_n_pes(t: shmemlib::shmem_team_t) -> i32 {
+    unsafe {
+       shmemlib::shmem_team_n_pes(t)
     }
 }
 
