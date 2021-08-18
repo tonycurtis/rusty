@@ -7,7 +7,6 @@ tmpsrc="pull.c"
 echo '#include <shmem.h>' > $tmpsrc
 
 caveat=<<EOT
-#![allow(non_camel_case_types,improper_ctypes)] // not our fault'
 EOT
 
 bindgen                                           \
@@ -17,7 +16,7 @@ bindgen                                           \
     --whitelist-var '^_SHMEM_.*'                  \
     --whitelist-function '^sh.*'                  \
     $tmpsrc                                       \
-    --raw-line "$caveat"                          \
+    --raw-line '#![allow(non_camel_case_types,improper_ctypes)] // not our fault' \
     -o shmemlib/src/lib.rs                        \
     --                                            \
     $inc_flags
