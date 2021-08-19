@@ -1,7 +1,9 @@
+use uname::uname;
 use std::mem;
 use shmem;
 
 fn main() {
+    let node = uname().unwrap().nodename;
 
     shmem::init();
 
@@ -24,7 +26,7 @@ fn main() {
 
     // raw pointer deref
     unsafe {
-        print!("{:>6}: got {:>6}", me, *dest);
+        print!("{}: {:>6}: got {:>6}", node, me, *dest);
         if *dest == me {
             println!("  CORRECT");
         }
