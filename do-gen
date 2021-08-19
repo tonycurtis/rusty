@@ -1,21 +1,31 @@
 #!/bin/sh -x
 
-inc_flags="`pkg-config --cflags osss-ucx`"
+impl=osss-ucx
 
-tmpsrc="pull.c"
+inc_dir="`pkg-config --variable includedir $impl`"
+flags="`pkg-config --cflags-only-I $impl`"
 
-echo '#include <shmem.h>' > $tmpsrc
+hdr="$inc_dir/shmem.h"
 
 bindgen                                           \
     --no-doc-comments                             \
     --enable-function-attribute-detection         \
-    --whitelist-var '^SHMEM_.*'                   \
-    --whitelist-var '^_SHMEM_.*'                  \
-    --whitelist-function '^sh.*'                  \
-    $tmpsrc                                       \
+    --allowlist-var '^SHMEM_.*'                   \
+    --allowlist-type '^shmem_.*'                   \
+    --allowlist-var '^_SHMEM_.*'                  \
+    --allowlist-function '^sh.*'                  \
+    --constified-enum '.*' --no-prepend-enum-name \
+    --translate-enum-integer-types \
     --raw-line '#![allow(non_camel_case_types,improper_ctypes)] // not our fault' \
-    -o shmemlib/src/lib.rs                        \
-    --                                            \
-    $inc_flags
+    -o shmemlib/src/lib.rs \
+    $hdr                                          \
+    -- \
+    $flags
 
-rm -f $tmpsrc
+# rm -f $tmpc $tmph
+
+
+
+
+exit
+

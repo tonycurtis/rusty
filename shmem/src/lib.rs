@@ -8,6 +8,13 @@ pub const MAJOR_VERSION: u32 = shmemlib::SHMEM_MAJOR_VERSION;
 pub const MINOR_VERSION: u32 = shmemlib::SHMEM_MINOR_VERSION;
 pub const VENDOR_STRING: &'static [u8; 9usize] = shmemlib::SHMEM_VENDOR_STRING;
 
+pub type ThreadLevel = i32;
+
+pub const THREAD_SINGLE: ThreadLevel = shmemlib::SHMEM_THREAD_SINGLE as ThreadLevel;
+pub const THREAD_FUNNELED: ThreadLevel = shmemlib::SHMEM_THREAD_FUNNELED as ThreadLevel;
+pub const THREAD_SERIALIZED: ThreadLevel = shmemlib::SHMEM_THREAD_SERIALIZED as ThreadLevel;
+pub const THREAD_MULTIPLE: ThreadLevel = shmemlib::SHMEM_THREAD_MULTIPLE as ThreadLevel;
+
 pub type SymmMemAddr = *mut libc::c_void;
 
 // TEAMS: don't like this, can't extend to derived teams.  just a
@@ -39,6 +46,16 @@ pub fn team_invalid() -> TeamType {
 pub fn init() {
     unsafe {
         shmemlib::shmem_init();
+    }
+}
+
+pub fn init_thread(req: ThreadLevel) -> ThreadLevel {
+    unsafe {
+	let mut prov: i32 = -1;
+	
+        shmemlib::shmem_init_thread(req, &mut prov);
+
+	prov as ThreadLevel
     }
 }
 
