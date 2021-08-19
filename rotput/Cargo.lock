@@ -49,6 +49,7 @@ name = "rotput"
 version = "0.1.0"
 dependencies = [
  "shmem",
+ "uname",
 ]
 
 [[package]]
