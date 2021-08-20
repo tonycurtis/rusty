@@ -1,6 +1,6 @@
+use std::f64::consts::PI;
 use std::mem;
 use uname::uname;
-use std::f64::consts::PI;
 // use std::cmp;
 use shmem;
 
@@ -22,8 +22,8 @@ fn main() {
     let h: f64 = 1.0 / N as f64;
     let mut sum: f64 = 0.0;
 
-    for i in (me + 1 .. N as i32).step_by(npes as usize) {
-        let x = h * ( (i as f64) - 0.5);
+    for i in (me + 1..N as i32).step_by(npes as usize) {
+        let x = h * ((i as f64) - 0.5);
 
         sum += f(x);
     }
@@ -35,15 +35,13 @@ fn main() {
     // shmem::double_sum_to_all(pi, mypi, 1, 0, 0, npes);
 
     unsafe {
-        *pi = mypi * npes as f64;    // fudge
+        *pi = mypi * npes as f64; // fudge
     }
 
     shmem::barrier_all();
 
     unsafe {
-        println!("PE {}/{} on \"{}\" pi = {}",
-                 me, npes, node,
-                 *pi);
+        println!("PE {}/{} on \"{}\" pi = {}", me, npes, node, *pi);
     }
 
     shmem::free(pi as shmem::SymmMemAddr);

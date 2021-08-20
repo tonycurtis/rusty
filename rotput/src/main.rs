@@ -1,6 +1,6 @@
-use uname::uname;
-use std::mem;
 use shmem;
+use std::mem;
+use uname::uname;
 
 fn main() {
     let node = uname().unwrap().nodename;
@@ -29,8 +29,7 @@ fn main() {
         print!("{}: {:>6}: got {:>6}", node, me, *dest);
         if *dest == me {
             println!("  CORRECT");
-        }
-        else {
+        } else {
             println!("  WRONG, expected {}", me);
         }
     }
@@ -38,5 +37,4 @@ fn main() {
     shmem::free(dest as shmem::SymmMemAddr);
 
     shmem::finalize();
-
 }
