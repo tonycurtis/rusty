@@ -17,11 +17,11 @@ fn decode(tl: shmem::ThreadLevel) -> String {
 
 fn encode(ts: &str) -> shmem::ThreadLevel {
     let res: shmem::ThreadLevel = match ts {
-	"SINGLE" => shmem::THREAD_SINGLE,
-	"FUNNELED" => shmem::THREAD_FUNNELED,
-	"SERIALIZED" => shmem::THREAD_SERIALIZED,
-	"MULTIPLE" => shmem::THREAD_MULTIPLE,
-	_ => shmem::THREAD_SINGLE - 1
+	"SINGLE"                   => shmem::THREAD_SINGLE,
+	"FUNNELED"                 => shmem::THREAD_FUNNELED,
+	"SERIALIZED"               => shmem::THREAD_SERIALIZED,
+	"MULTIPLE"                 => shmem::THREAD_MULTIPLE,
+	_                          => shmem::THREAD_SINGLE - 1
     };
 
     res
