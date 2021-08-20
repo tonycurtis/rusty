@@ -16,8 +16,10 @@ bindgen                                           \
     --allowlist-function '^sh.*'                  \
     --constified-enum '.*' --no-prepend-enum-name \
     --translate-enum-integer-types                \
-    --raw-line '#![allow(non_camel_case_types,improper_ctypes)] // not our fault' \
-    -o shmemlib/src/lib.rs \
+    --raw-line '// these caused by bindgen'       \
+    --raw-line '#![allow(non_camel_case_types)]'  \
+    --raw-line '#![allow(improper_ctypes)]'       \
+    -o shmemlib/src/lib.rs                        \
     $hdr                                          \
     --                                            \
     $flags
