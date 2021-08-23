@@ -219,5 +219,13 @@ pub fn barrier_all() {
 }
 
 //
-// == ====================================================================
+// == atomics ============================================================
 //
+
+pub fn int_atomic_add(dest: *mut i32, val: i32, pe: i32) {
+    unsafe {
+        shmemlib::shmem_int_atomic_add(dest, val,pe);
+    }
+}
+
+// and so on for other types
