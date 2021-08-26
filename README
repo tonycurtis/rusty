@@ -27,3 +27,7 @@ to actually use OpenSHMEM with Rust and to see what the interface
 should look like.  Currently it is too "C-like", e.g. see rotput that
 requires unsafe operations in user code.  This should be hidden by the
 shmem library.
+
+The examples are taken from the C programs in:
+
+  https://github.com/openshmem-org/openshmem-examples
