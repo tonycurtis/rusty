@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = "add"
+version = "0.1.0"
+dependencies = [
+ "shmem",
+ "uname",
+]
+
+[[package]]
 name = "enum_dispatch"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12,14 +20,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "fadd"
-version = "0.1.0"
-dependencies = [
- "shmem",
- "uname",
 ]
 
 [[package]]
