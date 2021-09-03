@@ -8,5 +8,3 @@ edition = "2018"
 
 [dependencies]
 shmem = { path = "../shmem" }
-hostname = "^0.3"
-uname = "0.1.1"
