@@ -1,6 +1,6 @@
 #!/bin/sh -x
 
-impl=osss-ucx
+impl='ompi-c'
 
 inc_dir="`pkg-config --variable includedir $impl`"
 flags="`pkg-config --cflags-only-I $impl`"

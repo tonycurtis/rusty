@@ -6,7 +6,7 @@ use std::string::String;
 
 pub const MAJOR_VERSION: u32 = shmemlib::SHMEM_MAJOR_VERSION;
 pub const MINOR_VERSION: u32 = shmemlib::SHMEM_MINOR_VERSION;
-pub const VENDOR_STRING: &'static [u8; 9usize] = shmemlib::SHMEM_VENDOR_STRING;
+// pub const VENDOR_STRING: &'static [u8; 9usize] = shmemlib::SHMEM_VENDOR_STRING;
 
 pub type ThreadLevel = i32;
 
@@ -20,18 +20,18 @@ pub type SymmMemAddr = *mut libc::c_void;
 // TEAMS: don't like this, can't extend to derived teams.  just a
 // stop-gap
 //
-
-pub type TeamType = shmemlib::shmem_team_t;
-
-pub fn team_world() -> TeamType {
-    unsafe { shmemlib::SHMEM_TEAM_WORLD }
-}
-pub fn team_shared() -> TeamType {
-    unsafe { shmemlib::SHMEM_TEAM_SHARED }
-}
-pub fn team_invalid() -> TeamType {
-    unsafe { shmemlib::SHMEM_TEAM_INVALID }
-}
+//
+// pub type TeamType = shmemlib::shmem_team_t;
+//
+// pub fn team_world() -> TeamType {
+//     unsafe { shmemlib::SHMEM_TEAM_WORLD }
+// }
+// pub fn team_shared() -> TeamType {
+//     unsafe { shmemlib::SHMEM_TEAM_SHARED }
+// }
+// pub fn team_invalid() -> TeamType {
+//     unsafe { shmemlib::SHMEM_TEAM_INVALID }
+// }
 
 //
 // == initialize and finalize ============================================
@@ -94,13 +94,13 @@ pub fn n_pes() -> i32 {
     unsafe { shmemlib::shmem_n_pes() }
 }
 
-pub fn team_my_pe(t: shmemlib::shmem_team_t) -> i32 {
-    unsafe { shmemlib::shmem_team_my_pe(t) }
-}
+// pub fn team_my_pe(t: shmemlib::shmem_team_t) -> i32 {
+//     unsafe { shmemlib::shmem_team_my_pe(t) }
+// }
 
-pub fn team_n_pes(t: shmemlib::shmem_team_t) -> i32 {
-    unsafe { shmemlib::shmem_team_n_pes(t) }
-}
+// pub fn team_n_pes(t: shmemlib::shmem_team_t) -> i32 {
+//     unsafe { shmemlib::shmem_team_n_pes(t) }
+// }
 
 pub fn pe_accessible(pe: i32) -> bool {
     unsafe { shmemlib::shmem_pe_accessible(pe) == 1 }
@@ -188,9 +188,9 @@ pub fn free(m: SymmMemAddr) {
     }
 }
 
-pub fn malloc_with_hints(n: usize, h: u64) -> SymmMemAddr {
-    unsafe { shmemlib::shmem_malloc_with_hints(n as u64, h as i64) }
-}
+// pub fn malloc_with_hints(n: usize, h: u64) -> SymmMemAddr {
+//     unsafe { shmemlib::shmem_malloc_with_hints(n as u64, h as i64) }
+// }
 
 pub fn ptr(m: SymmMemAddr, pe: i32) -> SymmMemAddr {
     unsafe { shmemlib::shmem_ptr(m, pe) }
