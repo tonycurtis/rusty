@@ -229,3 +229,11 @@ pub fn int_atomic_add(dest: *mut i32, val: i32, pe: i32) {
 }
 
 // and so on for other types
+
+pub fn int_atomic_fetch_add(dest: *mut i32, val: i32, pe: i32) -> i32 {
+    unsafe {
+        shmemlib::shmem_int_atomic_fetch_add(dest, val,pe)
+    }
+}
+
+// and so on for other types
