@@ -11,7 +11,7 @@ fn main() {
 
     let dest = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
     unsafe {
-	*dest = 6;
+	*dest = 22;
     }
     shmem::barrier_all();
 
