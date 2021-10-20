@@ -50,20 +50,25 @@ fn main() {
     // create the hashmap, and put it in the container
     GM.set(Mutex::new(HashMap::new()));
 
+    let xp;
+    let yp;
+
     unsafe {
         // just to fake a couple of raw C pointers
-        let xp = libc::malloc(32);
-        let yp = libc::malloc(16);
+        xp = libc::malloc(32);
+        yp = libc::malloc(16);
+    }
 
-        insert("tony", SA { p: xp });
-        insert("mary", SA { p: yp });
+    insert("tony", SA { p: xp });
+    insert("mary", SA { p: yp });
 
-        show();
+    show();
 
-        remove("tony");
+    remove("tony");
 
-        show();
+    show();
 
+    unsafe {
         // clean-up
         libc::free(xp);
         libc::free(yp);
