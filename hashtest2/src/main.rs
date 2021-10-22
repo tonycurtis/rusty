@@ -8,13 +8,13 @@ use state::Storage;
 //
 // map of names -> pointer-addresses
 //
-static GM: Storage<Mutex<HashMap<usize, &'static str>>> = Storage::new();
+static GM: Storage<Mutex<HashMap<usize, bool>>> = Storage::new();
 
-fn insert(a: usize, s: &'static str) {
+fn insert(a: usize) {
     // pull out inner map; mutable because we're updating
     let mut map = GM.get().lock().unwrap();
 
-    map.insert(a, s);
+    map.insert(a, true);
 }
 
 fn remove(a: usize) {
@@ -29,8 +29,8 @@ fn show() {
     // pull out inner map; immutable because we're only looking at it
     let map = GM.get().lock().unwrap();
 
-    for (ptr, name) in map.iter() {
-        println!("{:p} is {}", ptr, name);
+    for (ptr, _) in map.iter() {
+        println!("{:p}", ptr);
     }
 }
 
@@ -52,8 +52,8 @@ fn main() {
     let xi = xp as usize;
     let yi = yp as usize;
 
-    insert(xi, "tony");
-    insert(yi, "mary");
+    insert(xi);
+    insert(yi);
 
     show();
 
