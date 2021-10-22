@@ -6,7 +6,7 @@ use std::sync::Mutex;
 use state::Storage;
 
 //
-// map of names -> pointer-addresses
+// map of allocated addresses
 //
 static GM: Storage<Mutex<HashMap<usize, bool>>> = Storage::new();
 
