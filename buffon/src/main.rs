@@ -1,19 +1,52 @@
 // WORK IN PROGRESS
 
 use shmem;
-// use std::mem;
+use std::mem;
 
 extern crate rand;
 use rand::thread_rng;
 use rand::Rng;
 
+use std::f64::consts::PI;
+
 fn make_random_value() -> f64 {
-    let rand_max: u64 = 2147483647; // as in <stdlib.h>
+    let rand_max: f64 = 2147483647.0; // as in <stdlib.h>
 
     let mut rng = thread_rng();
-    let rv: f64 = rng.gen_range(0.0 .. rand_max as f64);
+    let rv: f64 = rng.gen_range(0.0 .. rand_max);
 
-    rv
+    rv / rand_max
+}
+
+fn buffon_laplace_simulate(a: f64, b: f64, l: f64, trial_num: i32) -> i32 {
+    let mut hits = 0;
+
+    for _trial in 1 .. trial_num {
+        //
+        // Randomly choose the location of the eye of the needle in
+        // [0,0]x[A,B],
+        // and the angle the needle makes.
+        //
+        let x1 = a * make_random_value();
+        let y1 = b * make_random_value();
+        let angle = 2.0 * PI * make_random_value();
+        //
+        // Compute the location of the point of the needle.
+        //
+        let x2 = x1 + l * angle.cos();
+        let y2 = y1 + l * angle.sin();
+        //
+        // Count the end locations that lie outside the cell.
+        //
+        if x2 <= 0.0 || a <= x2 || y2 <= 0.0 || b <= y2 {
+            hits += 1;
+        }
+    }
+    return hits;
+}
+
+fn r8_huge() -> f64 {
+    1.0e+30
 }
 
 fn main() {
@@ -22,6 +55,14 @@ fn main() {
     let l: f64 = 1.0;
 
     shmem::init();
+
+    let hit_total = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
+    let hit_num = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
+
+    unsafe {
+        *hit_total = 0;
+        *hit_num = 0;
+    }
 
     let me = shmem::my_pe();
     let n = shmem::n_pes();
@@ -48,9 +89,55 @@ fn main() {
 
     shmem::barrier_all();
 
-    let random_value = make_random_value();
+    let trial_num = 100000;
 
-    println!("Random value = {}", random_value);
+    unsafe {
+        *hit_num = buffon_laplace_simulate(a, b, l, trial_num);
+    }
+
+    // TODO: shmem::int_sum_to_all();
+
+    if me == 0 {
+        let trial_total = trial_num * me;
+
+        let pdf_estimate;
+
+        unsafe {
+            pdf_estimate = *hit_total as f64 / trial_total as f64;
+        }
+
+        let pi_estimate;
+
+        unsafe {
+            if *hit_total == 0 {
+                pi_estimate = r8_huge();
+            }
+            else {
+                pi_estimate = l * (2.0 * (a + b) - l) / (a * b * pdf_estimate);
+            }
+        }
+
+        let pi_error = (PI - pi_estimate).abs();
+
+        println!();
+        println!("    Trials      Hits    Estimated PDF       Estimated Pi        Error");
+        println!();
+        unsafe {
+            println!("{:>8}  {:>8}  {:>8}  {:>8}  {:>8}",
+                     trial_total,
+                     *hit_total,
+                     pdf_estimate,
+                     pi_estimate,
+                     pi_error
+            );
+        }
+    }
+
+    if me == 0 {
+        println!();
+        println!("BUFFON_LAPLACE - Master process:");
+        println!("Normal end of execution.");
+    }
 
     shmem::finalize();
 }
