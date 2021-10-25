@@ -92,9 +92,9 @@ fn main() {
         println!();
         println!("  The number of processes is {}", npes);
         println!();
-        println!("  Cell width A =    {}", a);
-        println!("  Cell height B =   {}", b);
-        println!("  Needle length L = {}", l);
+        println!("  Cell width A =    {:.1}", a);
+        println!("  Cell height B =   {:.1}", b);
+        println!("  Needle length L = {:.1}", l);
         println!();
     }
 
