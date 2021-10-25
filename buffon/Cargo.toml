@@ -9,3 +9,9 @@ edition = "2018"
 [dependencies]
 shmem = { path = "../shmem" }
 rand = { version = "0.8.0" }
+
+[profile.release]
+lto = true
+
+[profile.dev]
+opt-level = 3
