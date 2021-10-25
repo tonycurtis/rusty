@@ -59,9 +59,16 @@ fn main() {
     let hit_total = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
     let hit_num = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
 
+    let pwrk = shmem::malloc(shmem::REDUCE_MIN_WRKDATA_SIZE * mem::size_of::<i32>()) as *mut i32;
+    let psync = shmem::malloc(shmem::SYNC_SIZE * mem::size_of::<i64>()) as *mut i64;
+
     unsafe {
         *hit_total = 0;
         *hit_num = 0;
+
+        for i in 0 .. shmem::BCAST_SYNC_SIZE - 1 {
+            *psync.add(i) = shmem::SYNC_VALUE;
+        }
     }
 
     let me = shmem::my_pe();
@@ -87,28 +94,24 @@ fn main() {
         println!("  Needle length L = {}", l);
     }
 
-    shmem::barrier_all();
-
     let trial_num = 100000;
 
     unsafe {
         *hit_num = buffon_laplace_simulate(a, b, l, trial_num);
     }
 
-    // TODO: shmem::int_sum_to_all();
+    shmem::barrier_all();
+
+    shmem::int_sum_to_all(hit_total, hit_num, 1, 0, 0, me, pwrk, psync);
 
     if me == 0 {
         let trial_total = trial_num * me;
 
-        let pdf_estimate;
+        let (pdf_estimate, pi_estimate);
 
         unsafe {
             pdf_estimate = *hit_total as f64 / trial_total as f64;
-        }
 
-        let pi_estimate;
-
-        unsafe {
             if *hit_total == 0 {
                 pi_estimate = r8_huge();
             }
@@ -120,10 +123,17 @@ fn main() {
         let pi_error = (PI - pi_estimate).abs();
 
         println!();
-        println!("    Trials      Hits    Estimated PDF       Estimated Pi        Error");
+        println!("{:>8}  {:>8}  {:>16}  {:>16}  {:>16}",
+                 "Trials",
+                 "Hits",
+                 "Estimated PDF",
+                 "Estimated Pi",
+                 "Error"
+        );
         println!();
+
         unsafe {
-            println!("{:>8}  {:>8}  {:>8}  {:>8}  {:>8}",
+            println!("{:>8}  {:>8}  {:>16}  {:>16}  {:>16}",
                      trial_total,
                      *hit_total,
                      pdf_estimate,
@@ -138,6 +148,9 @@ fn main() {
         println!("BUFFON_LAPLACE - Master process:");
         println!("Normal end of execution.");
     }
+
+    shmem::free(pwrk as shmem::SymmMemAddr);
+    shmem::free(psync as shmem::SymmMemAddr);
 
     shmem::finalize();
 }
