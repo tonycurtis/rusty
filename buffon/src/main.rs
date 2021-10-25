@@ -1,5 +1,3 @@
-// WORK IN PROGRESS
-
 use shmem;
 use std::mem;
 
@@ -10,18 +8,19 @@ use rand::Rng;
 use std::f64::consts::PI;
 
 fn make_random_value() -> f64 {
-    let rand_max: f64 = 2147483647.0; // as in <stdlib.h>
+    // let rand_max: f64 = 2147483647.0; // as in <stdlib.h>
 
     let mut rng = thread_rng();
-    let rv: f64 = rng.gen_range(0.0 .. rand_max);
+    // let rv: f64 = rng.gen_range(0.0 .. rand_max);
+    let rv = rng.gen::<f64>();
 
-    rv / rand_max
+    rv
 }
 
 fn buffon_laplace_simulate(a: f64, b: f64, l: f64, trial_num: i32) -> i32 {
     let mut hits = 0;
 
-    for _trial in 1 .. trial_num {
+    for _ in 1 .. trial_num {
         //
         // Randomly choose the location of the eye of the needle in
         // [0,0]x[A,B],
@@ -42,7 +41,8 @@ fn buffon_laplace_simulate(a: f64, b: f64, l: f64, trial_num: i32) -> i32 {
             hits += 1;
         }
     }
-    return hits;
+
+    hits
 }
 
 fn r8_huge() -> f64 {
@@ -56,23 +56,26 @@ fn main() {
 
     shmem::init();
 
+    let me = shmem::my_pe();
+    let npes = shmem::n_pes();
+
     let hit_total = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
     let hit_num = shmem::malloc(1 * mem::size_of::<i32>()) as *mut i32;
 
-    let pwrk = shmem::malloc(shmem::REDUCE_MIN_WRKDATA_SIZE * mem::size_of::<i32>()) as *mut i32;
-    let psync = shmem::malloc(shmem::SYNC_SIZE * mem::size_of::<i64>()) as *mut i64;
+    let pwrk =
+        shmem::malloc(shmem::REDUCE_MIN_WRKDATA_SIZE * mem::size_of::<i32>())
+        as *mut i32;
+
+    let psync = shmem::malloc(shmem::SYNC_SIZE * mem::size_of::<i64>())
+        as *mut i64;
 
     unsafe {
-        *hit_total = 0;
         *hit_num = 0;
 
         for i in 0 .. shmem::BCAST_SYNC_SIZE - 1 {
             *psync.add(i) = shmem::SYNC_VALUE;
         }
     }
-
-    let me = shmem::my_pe();
-    let n = shmem::n_pes();
 
     if me == 0 {
         println!();
@@ -87,12 +90,18 @@ fn main() {
         println!("  at least one grid line, and use this to estimate ");
         println!("  the value of PI.");
         println!();
-        println!("  The number of processes is {}", n);
+        println!("  The number of processes is {}", npes);
         println!();
         println!("  Cell width A =    {}", a);
         println!("  Cell height B =   {}", b);
         println!("  Needle length L = {}", l);
+        println!();
     }
+
+    let seed = 123456789 + me * 100;
+    let random_value = make_random_value();
+
+    println!("{:>8} {:>8} {:>.6}", me, seed, random_value);
 
     let trial_num = 100000;
 
@@ -102,10 +111,10 @@ fn main() {
 
     shmem::barrier_all();
 
-    shmem::int_sum_to_all(hit_total, hit_num, 1, 0, 0, me, pwrk, psync);
+    shmem::int_sum_to_all(hit_total, hit_num, 1, 0, 0, npes, pwrk, psync);
 
     if me == 0 {
-        let trial_total = trial_num * me;
+        let trial_total = trial_num * npes;
 
         let (pdf_estimate, pi_estimate);
 
@@ -133,7 +142,7 @@ fn main() {
         println!();
 
         unsafe {
-            println!("{:>8}  {:>8}  {:>16}  {:>16}  {:>16}",
+            println!("{:>8}  {:>8}  {:>16.5}  {:>16.5}  {:>16.5}",
                      trial_total,
                      *hit_total,
                      pdf_estimate,
