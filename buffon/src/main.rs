@@ -98,10 +98,7 @@ fn main() {
         println!();
     }
 
-    let seed = 123456789 + me * 100;
-    let random_value = make_random_value();
-
-    println!("{:>8} {:>8} {:>.6}", me, seed, random_value);
+    // remove rather pointless C++ output from here
 
     let trial_num = 100000;
 
