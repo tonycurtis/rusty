@@ -248,23 +248,15 @@ pub fn int_atomic_fetch_add(dest: *mut i32, val: i32, pe: i32) -> i32 {
 // == collectivess =======================================================
 //
 
-pub fn int_sum_to_all(target: *mut i32,
-                      source: *mut i32,
+pub fn int_sum_to_all(target: *mut i32, source: *mut i32,
                       nreduce: i32,
-                      start: i32,
-                      stride: i32,
-                      size: i32,
-                      pwrk: *mut i32,
-                      psync: *mut i64) {
+                      start: i32, stride: i32, size: i32,
+                      pwrk: *mut i32, psync: *mut i64) {
     unsafe {
-        shmemlib::shmem_int_sum_to_all(target,
-                                       source,
+        shmemlib::shmem_int_sum_to_all(target, source,
                                        nreduce,
-                                       start,
-                                       stride,
-                                       size,
-                                       pwrk,
-                                       psync);
+                                       start, stride, size,
+                                       pwrk, psync);
     }
 }
 
