@@ -8,9 +8,7 @@ use rand::Rng;
 use std::f64::consts::PI;
 
 fn make_random_value() -> f64 {
-    let mut rng = thread_rng();
-
-    rng.gen::<f64>()
+    thread_rng().gen::<f64>()
 }
 
 fn buffon_laplace_simulate(a: f64, b: f64, l: f64, trial_num: i32) -> i32 {
