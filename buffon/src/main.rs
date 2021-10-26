@@ -8,13 +8,9 @@ use rand::Rng;
 use std::f64::consts::PI;
 
 fn make_random_value() -> f64 {
-    // let rand_max: f64 = 2147483647.0; // as in <stdlib.h>
-
     let mut rng = thread_rng();
-    // let rv: f64 = rng.gen_range(0.0 .. rand_max);
-    let rv = rng.gen::<f64>();
 
-    rv
+    rng.gen::<f64>()
 }
 
 fn buffon_laplace_simulate(a: f64, b: f64, l: f64, trial_num: i32) -> i32 {
@@ -118,18 +114,16 @@ fn main() {
         unsafe {
             pdf_estimate = *hit_total as f64 / trial_total as f64;
 
-            if *hit_total == 0 {
-                pi_estimate = r8_huge();
-            }
-            else {
-                pi_estimate = l * (2.0 * (a + b) - l) / (a * b * pdf_estimate);
-            }
+            pi_estimate = match *hit_total {
+                0 => r8_huge(),
+                _ => l * (2.0 * (a + b) - l) / (a * b * pdf_estimate),
+            };
         }
 
         let pi_error = (PI - pi_estimate).abs();
 
         println!();
-        println!("{:>8}  {:>8}  {:>16}  {:>16}  {:>16}",
+        println!("    {:>8}  {:>8}  {:>16}  {:>16}  {:>16}",
                  "Trials",
                  "Hits",
                  "Estimated PDF",
@@ -139,7 +133,7 @@ fn main() {
         println!();
 
         unsafe {
-            println!("{:>8}  {:>8}  {:>16.5}  {:>16.5}  {:>16.5}",
+            println!("    {:>8}  {:>8}  {:>16.5}  {:>16.5}  {:>16.5}",
                      trial_total,
                      *hit_total,
                      pdf_estimate,
