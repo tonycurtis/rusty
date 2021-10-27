@@ -7,6 +7,7 @@ name = "cpi"
 version = "0.1.0"
 dependencies = [
  "shmem",
+ "time",
  "uname",
 ]
 
@@ -75,6 +76,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "time"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "99beeb0daeac2bd1e86ac2c21caddecb244b39a093594da1a661ec2060c7aedd"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

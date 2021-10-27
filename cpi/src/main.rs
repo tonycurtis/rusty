@@ -2,6 +2,7 @@ use std::f64::consts::PI;
 use std::mem;
 // use std::cmp;
 use shmem;
+use std::time::Instant;
 
 pub const N: i64 = 10000;
 
@@ -13,6 +14,8 @@ fn main() {
     shmem::init();
     let me = shmem::my_pe();
     let npes = shmem::n_pes();
+
+    let start_time = Instant::now();
 
     let pi = shmem::malloc(mem::size_of::<f64>()) as *mut f64;
     let mypi = shmem::malloc(mem::size_of::<f64>()) as *mut f64;
@@ -53,7 +56,8 @@ fn main() {
 
     if me == 0 {
         unsafe {
-            println!("pi = {}, epsilon = {}", *pi, (*pi - PI).abs());
+            println!("pi = {}, epsilon = {}, in {:?}",
+                     *pi, (*pi - PI).abs(), start_time.elapsed());
         }
     }
 
