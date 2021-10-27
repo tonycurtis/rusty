@@ -1,7 +1,6 @@
 use shmem;
 use std::mem;
 
-extern crate rand;
 use rand::thread_rng;
 use rand::Rng;
 
