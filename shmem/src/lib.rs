@@ -22,6 +22,7 @@ pub const REDUCE_MIN_WRKDATA_SIZE: usize = shmemlib::SHMEM_REDUCE_MIN_WRKDATA_SI
 pub const SYNC_VALUE: i64 = shmemlib::SHMEM_SYNC_VALUE as i64;
 
 pub type SymmMemAddr = *mut libc::c_void;
+pub type ShmemLock = *mut i64;
 
 // TEAMS: don't like this, can't extend to derived teams.  just a
 // stop-gap
@@ -144,6 +145,12 @@ pub fn float_put(dest: *mut f32, src: *const f32, n: u64, pe: i32) {
 
 // etc.
 
+pub fn int_g(dest: *mut i32, pe: i32) -> i32 {
+    unsafe {
+        shmemlib::shmem_int_g(dest, pe)
+    }
+}
+
 pub fn int_get(dest: *mut i32, src: *const i32, n: u64, pe: i32) {
     unsafe {
         shmemlib::shmem_int_get(dest, src, n, pe);
@@ -234,8 +241,6 @@ pub fn int_atomic_add(dest: *mut i32, val: i32, pe: i32) {
     }
 }
 
-// and so on for other types
-
 pub fn int_atomic_fetch_add(dest: *mut i32, val: i32, pe: i32) -> i32 {
     unsafe {
         shmemlib::shmem_int_atomic_fetch_add(dest, val,pe)
@@ -243,6 +248,28 @@ pub fn int_atomic_fetch_add(dest: *mut i32, val: i32, pe: i32) -> i32 {
 }
 
 // and so on for other types
+
+//
+// == locks ==============================================================
+//
+
+pub fn set_lock(lk: ShmemLock) {
+    unsafe {
+        shmemlib::shmem_set_lock(lk);
+    }
+}
+
+pub fn clear_lock(lk: ShmemLock) {
+    unsafe {
+        shmemlib::shmem_clear_lock(lk);
+    }
+}
+
+pub fn test_lock(lk: ShmemLock) -> i32 {
+    unsafe {
+        shmemlib::shmem_test_lock(lk) as i32
+    }
+}
 
 //
 // == collectivess =======================================================
