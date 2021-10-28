@@ -111,9 +111,11 @@ fn main() {
         unsafe {
             pdf_estimate = *hit_total as f64 / trial_total as f64;
 
-            pi_estimate = match *hit_total {
-                0 => r8_huge(),
-                _ => l * (2.0 * (a + b) - l) / (a * b * pdf_estimate),
+            pi_estimate = if *hit_total == 0 {
+                r8_huge()
+            }
+            else {
+                l * (2.0 * (a + b) - l) / (a * b * pdf_estimate)
             };
         }
 
