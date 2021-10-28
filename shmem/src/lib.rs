@@ -265,9 +265,9 @@ pub fn clear_lock(lk: ShmemLock) {
     }
 }
 
-pub fn test_lock(lk: ShmemLock) -> i32 {
+pub fn test_lock(lk: ShmemLock) -> bool {
     unsafe {
-        shmemlib::shmem_test_lock(lk) as i32
+        shmemlib::shmem_test_lock(lk) != 0
     }
 }
 

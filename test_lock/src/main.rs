@@ -37,7 +37,7 @@ fn main() {
 
     if matches.opt_present("t") {
         if me == 0 { eprintln!("Using test lock"); }
-        while shmem::test_lock(lock) != 0 {};
+        while shmem::test_lock(lock) {};
     }
     else {
         if me == 0 { eprintln!("Using set lock"); }
