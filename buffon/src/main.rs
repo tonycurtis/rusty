@@ -43,6 +43,8 @@ fn r8_huge() -> f64 {
 }
 
 fn main() {
+    let master = 0;
+
     let a: f64 = 1.0;
     let b: f64 = 1.0;
     let l: f64 = 1.0;
@@ -70,7 +72,7 @@ fn main() {
         }
     }
 
-    if me == 0 {
+    if me == master {
         println!();
         println!("BUFFON_LAPLACE - Master process:");
         println!("  Rust version");
@@ -103,7 +105,7 @@ fn main() {
 
     shmem::int_sum_to_all(hit_total, hit_num, 1, 0, 0, npes, pwrk, psync);
 
-    if me == 0 {
+    if me == master {
         let trial_total = trial_num * npes;
 
         let (pdf_estimate, pi_estimate);
@@ -142,7 +144,7 @@ fn main() {
         }
     }
 
-    if me == 0 {
+    if me == master {
         println!();
         println!("BUFFON_LAPLACE - Master process:");
         println!("Normal end of execution.");
