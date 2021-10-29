@@ -131,6 +131,11 @@ pub fn int_put(dest: *mut i32, src: *const i32, n: u64, pe: i32) {
         shmemlib::shmem_int_put(dest, src, n, pe);
     }
 }
+pub fn int_put_nbi(dest: *mut i32, src: *const i32, n: u64, pe: i32) {
+    unsafe {
+        shmemlib::shmem_int_put_nbi(dest, src, n, pe);
+    }
+}
 
 pub fn float_p(dest: *mut f32, src: f32, pe: i32) {
     unsafe {
