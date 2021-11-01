@@ -3,6 +3,7 @@ use std::mem;
 use shmem;
 use std::time::Instant;
 use std::env;
+use uname::uname;
 
 // default no. of iterations
 pub const N: i64 = 10000;
@@ -12,6 +13,8 @@ fn f(a: f64) -> f64 {
 }
 
 fn main() {
+    let node = uname().unwrap().nodename;
+
     let argv: Vec<String> = env::args().collect();
 
     let niters: i64 = if argv.len() > 1 {
@@ -23,6 +26,8 @@ fn main() {
     shmem::init();
     let me = shmem::my_pe();
     let npes = shmem::n_pes();
+
+    println!("PE {} on node {}", me, node);
 
     let start_time = Instant::now();
 
@@ -60,6 +65,7 @@ fn main() {
     shmem::double_sum_to_all(pi, mypi, 1, 0, 0, npes, pwrk, psync);
 
     if me == 0 {
+        println!();
         unsafe {
             println!("pi = {}, epsilon = {}, in {:?}",
                      *pi, (*pi - PI).abs(), start_time.elapsed());
