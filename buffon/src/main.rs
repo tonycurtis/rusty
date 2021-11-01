@@ -6,6 +6,8 @@ use rand::Rng;
 
 use std::f64::consts::PI;
 
+use std::env;
+
 fn make_random_value() -> f64 {
     thread_rng().gen::<f64>()
 }
@@ -43,6 +45,14 @@ fn r8_huge() -> f64 {
 }
 
 fn main() {
+    let argv: Vec<String> = env::args().collect();
+
+    let trial_num: i32 = if argv.len() > 1 {
+        argv[1].parse().unwrap()
+    } else {
+        100000
+    };
+
     let master = 0;
 
     let a: f64 = 1.0;
@@ -94,8 +104,6 @@ fn main() {
     }
 
     // remove rather pointless C++ output from here
-
-    let trial_num = 100000;
 
     unsafe {
         *hit_num = buffon_laplace_simulate(a, b, l, trial_num);
