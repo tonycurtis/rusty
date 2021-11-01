@@ -248,7 +248,13 @@ pub fn int_atomic_add(dest: *mut i32, val: i32, pe: i32) {
 
 pub fn int_atomic_fetch_add(dest: *mut i32, val: i32, pe: i32) -> i32 {
     unsafe {
-        shmemlib::shmem_int_atomic_fetch_add(dest, val,pe)
+        shmemlib::shmem_int_atomic_fetch_add(dest, val, pe)
+    }
+}
+
+pub fn int_atomic_compare_swap(dest: *mut i32, cond: i32, val: i32, pe: i32) -> i32 {
+    unsafe {
+        shmemlib::shmem_int_atomic_compare_swap(dest, cond, val, pe)
     }
 }
 
