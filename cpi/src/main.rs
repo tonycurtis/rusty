@@ -1,9 +1,10 @@
 use std::f64::consts::PI;
 use std::mem;
-// use std::cmp;
 use shmem;
 use std::time::Instant;
+use std::env;
 
+// default no. of iterations
 pub const N: i64 = 10000;
 
 fn f(a: f64) -> f64 {
@@ -11,6 +12,14 @@ fn f(a: f64) -> f64 {
 }
 
 fn main() {
+    let argv: Vec<String> = env::args().collect();
+
+    let niters: i64 = if argv.len() > 1 {
+        argv[1].parse().unwrap()
+    } else {
+        N
+    };
+
     shmem::init();
     let me = shmem::my_pe();
     let npes = shmem::n_pes();
@@ -33,10 +42,10 @@ fn main() {
         }
     }
 
-    let h: f64 = 1.0 / N as f64;
+    let h: f64 = 1.0 / niters as f64;
     let mut sum: f64 = 0.0;
 
-    for i in (me + 1..N as i32).step_by(npes as usize) {
+    for i in (me + 1..niters as i32).step_by(npes as usize) {
         let x = h * ((i as f64) - 0.5);
 
         sum += f(x);
@@ -49,10 +58,6 @@ fn main() {
     shmem::barrier_all();
 
     shmem::double_sum_to_all(pi, mypi, 1, 0, 0, npes, pwrk, psync);
-
-    unsafe {
-        *pi = *mypi * npes as f64; // fudge
-    }
 
     if me == 0 {
         unsafe {
